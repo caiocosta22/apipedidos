@@ -1,4 +1,4 @@
-import controllersCep from '../controllers/controllers.cep.js';
+/*import controllersCep from '../controllers/controllers.cep.js';
 import { Router } from 'express';
 const routeCep = Router();
 
@@ -7,4 +7,4 @@ routeCep.post('/inserir/', controllersCep.Inserir);
 routeCep.get('/checar/', controllersCep.checar);
 routeCep.post('/checar-inserir/', controllersCep.checarinserir);
 
-export default routeCep
+export default routeCep*/
