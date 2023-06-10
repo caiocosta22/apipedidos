@@ -1,13 +1,20 @@
 'use strict';
+// Rota criada para testes iniciais de desenvolvimento
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controllers/controllers.ped.js')
+const teste = router.get('/', (req, res, next) => {
+    res.status(200).send({
+        title: "Node API Pedidos",
+        version: "0.0.2"
+    });
+});
 
-router.get('/', controller.get);
-router.post('/', controller.post);
+const create = router.post('/', (req, res, next) => {
+    res.status(201).send(req.body);
+});
 
-module.exports = router;
+module.exports = teste;
 
 // http error 200: concluido com sucesso
 // http error 201: criado com sucesso

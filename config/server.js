@@ -1,8 +1,8 @@
 'use strict'
 
-
 const http = require('http');
 const debug = require('debug')('gpvendas:server');
+const app = require('../index.js')
 
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
@@ -27,7 +27,7 @@ function normalizePort(val) {
         }
     return false
     //O valor fornecido for inválido
-}
+};
 
 //Funcao para exibir erros do servidor
 function onError(error){
@@ -52,7 +52,7 @@ function onError(error){
             throw error;
     }
 
-}
+};
 
 function onListening() {
     const addr = server.address();
@@ -60,4 +60,4 @@ function onListening() {
         ? 'pipe' + addr
         : 'port' + addr.port;
         debug('Listening on' + bind);
-}
+};
