@@ -115,3 +115,4 @@ const jsonPostgree = [
     
     console.log("CEPS LOCAL: ",  bdlocal, "CEPS NUVEM: ",pgceps, "CEPS QUE UM OU OUTRO BD NAO POSSUI: ", jsonArray, "JSON FINAL DE CADA CEP: ", newJsonArray)
     
+    

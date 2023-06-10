@@ -1,16 +1,22 @@
 'use strict';
-
+// Importações da biblioteca express e bodyparser
 const express = require('express');
+const bodyParser = require('body-parser');
 
+//Declarando que meu objeto app vai utilizar a biblioteca express
 const app = express();
-const router = express.Router();
 
-const route = router.get('/', (req, res, next) =>{
-    res.status(200).send({
-        title: "Node Store API",
-        version: "0.0.1"
-    });
-});
-app.use('/', route);
+// Utilização do body parser no objeto para conseguirmos interpretar formato json
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Importação e utilização das rotas
+const routeTeste = require('./routes/routes.teste.js');
+const routePed = require('./routes/routes.ped.js');
+
+app.use('/', routeTeste);
+app.use('/ped', routePed);
 
 module.exports = app;
+
+
