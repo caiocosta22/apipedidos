@@ -11,11 +11,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Importação e utilização das rotas
-const routeTeste = require('./routes/routes.teste.js');
 const routePed = require('./routes/routes.ped.js');
 
-app.use('/', routeTeste);
 app.use('/ped', routePed);
+
 
 module.exports = app;
 

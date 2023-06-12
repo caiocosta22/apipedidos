@@ -1,4 +1,4 @@
-const jsonPostgree = [
+/*const jsonPostgree = [
     {
       "cep": "12345-678",
       "logradouro": "Rua das Flores",
@@ -116,3 +116,40 @@ const jsonPostgree = [
     console.log("CEPS LOCAL: ",  bdlocal, "CEPS NUVEM: ",pgceps, "CEPS QUE UM OU OUTRO BD NAO POSSUI: ", jsonArray, "JSON FINAL DE CADA CEP: ", newJsonArray)
     
     
+
+
+
+
+    async function executeQuery() {
+      try {
+        // Conexão com o SQL
+        await pool.connect();
+        console.log('Conexão bem-sucedida');
+    
+        // Introdução da Consulta
+        const query = 'SELECT * FROM CONSULTA_CEP';
+        const result = await pool.request().query(query);
+        console.log(result.recordset);
+    
+        // Encerrar conexão
+        pool.close();
+      } catch (err) {
+        console.error('Erro ao executar a consulta:', err);
+      }
+    }
+    
+    executeQuery();
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+

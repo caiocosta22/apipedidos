@@ -1,6 +1,7 @@
-const query = require('express');
+'use strict'
+const pg = require('pg')
 const sql = require('mssql');
-
+// Conexão com o SQL
 const sqlconfig = {
   user: 'gpvendas',
   password: 'gpinfo',
@@ -15,9 +16,8 @@ const sqlconfig = {
     encrypt: false // para microsoft azure
   }
 };
-
 // Teste de conexão com o banco de dados
-async function Connectionsql() {
+/*async function Connectionsql() {
   try {
     await sql.connect(sqlconfig);
     console.log("Conexão com banco de dados SQL sucedida!");
@@ -28,11 +28,10 @@ async function Connectionsql() {
   sql.close();
 };
 Connectionsql();
-
+*/
 // Conexão com o PG
 
 const { Client } = require('pg');
-
 const pgconfig = new Client({
   user: 'gprod',
   host: 'CLOUD64.P80.COM.BR',
@@ -42,7 +41,7 @@ const pgconfig = new Client({
 });
 
 // Teste de conexão com o banco de dados
-async function Connectionpg() {
+/*async function Connectionpg() {
   try {
     await pgconfig.connect();
     console.log("Conexão com banco de dados POSTGREE sucedida!");
@@ -58,4 +57,7 @@ async function Connectionpg() {
   await pgconfig.end();
   }
 };
-Connectionpg();
+Connectionpg();*/
+
+
+module.exports = sqlconfig, pgconfig
