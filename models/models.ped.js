@@ -2,7 +2,6 @@
 const pgpool = require ('../config/pgconfig.js');
 const sqlpool = require ('../config/sqlconfig.js');
 
-
 async function checapedidosql() {
     try {
       // Conexão com o SQL
