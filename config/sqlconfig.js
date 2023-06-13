@@ -1,14 +1,13 @@
 'use strict';
-
 const sql = require('mssql');
 // Conexão com o SQL
-const sqlconfig = {
+const connect = {
   user: 'gpvendas',
   password: 'gpinfo',
   database: 'CEP_API',
   server: 'g2server',
   pool: {
-    max: 10,
+    max: 20,
     min: 0,
     idleTimeoutMillis: 30000
   },
@@ -16,6 +15,8 @@ const sqlconfig = {
     encrypt: false // para microsoft azure
   }
 };
+const sqlpool = new sql.ConnectionPool(connect);
+
 // Teste de conexão com o banco de dados
 /*async function Connectionsql() {
   try {
@@ -30,6 +31,4 @@ const sqlconfig = {
 Connectionsql();
 */
 
-
-
-module.exports = sqlconfig
+module.exports = sqlpool

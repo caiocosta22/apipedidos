@@ -2,7 +2,7 @@
 
 // Conexão com o PG
 const { Pool } = require('pg'); 
-const pgconfig = new Pool({
+const pgpool = new Pool({
   user: 'gprod',
   host: 'CLOUD64.P80.COM.BR',
   database: 'gpinformatica2',
@@ -10,7 +10,7 @@ const pgconfig = new Pool({
   port: '5432',
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  connectionTimeoutMillis: 2000,
 });
 
 // Teste de conexão com o banco de dados
@@ -32,4 +32,4 @@ const pgconfig = new Pool({
 };
 Connectionpg();*/
 
-module.exports = pgconfig
+module.exports = pgpool
