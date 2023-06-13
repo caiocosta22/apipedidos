@@ -1,5 +1,5 @@
 'use strict';
-const models = require('../models/models.ped')
+const models = require('../models/models.ped.js')
 
 exports.getsql = (req, res) => {
     // Usando a função checapedido do objeto models, ao executa-la me tras um resultado, se der erro, trará também.

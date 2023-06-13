@@ -2,7 +2,7 @@
 const sql = require('mssql');
 const pg = require('pg');
 const sqlconfig = require ('../config/database.js');
-const pgconfig = require ('../config/database.js')
+const pgconfig = require ('../config/postgree.js');
 const pool = new sql.ConnectionPool(sqlconfig);
 
 
@@ -37,15 +37,14 @@ async function checapedidopg() {
         const querypg = 'SELECT * FROM SITE_PEDIDOS_FATURADOS LIMIT 1';
         const result = await pgconfig.query(querypg);
         console.log("Tentativa de consulta:   ",result.rows);
-    
     // Finalizando conexão com o Banco
     } catch (error) {
         console.log("Falha na conexão com o banco de dados POSTGREE");
         throw console.log(error);
     } finally {
-        await pgconfig.end();
+        await pgconfig.release();
     }
 };
 
 
-module.exports = {checapedidosql, checapedidopg};
+module.exports = {checapedidosql,checapedidopg};
