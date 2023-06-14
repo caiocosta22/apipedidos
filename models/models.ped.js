@@ -1,4 +1,5 @@
 'use strict';
+
 const pgpool = require ('../config/pgconfig.js');
 const sqlpool = require ('../config/sqlconfig.js');
 
@@ -9,9 +10,9 @@ async function checapedidosql() {
       console.log('Conexão bem-sucedida com o SQL SERVER');
   
       // Introdução da Consulta
-      const query = 'SELECT TOP 1 * FROM CONSULTA_CEP';
+      let query = `SELECT TOP 1 * FROM CONSULTA_CEP`;
       const result = await sqlpool.request().query(query);
-      let resultadosql = result.recordset
+      const resultadosql = result.recordset
       console.log(resultadosql);
   
       // Encerrar conexão
@@ -21,7 +22,6 @@ async function checapedidosql() {
     };
 };
 
-
 async function checapedidopg() {
     try {
     // Inicio da conexão com o banco
@@ -29,7 +29,7 @@ async function checapedidopg() {
         console.log("Conexão com banco de dados POSTGREE sucedida!");
     
     //Inicio da consulta
-        const querypg = 'SELECT * FROM SITE_PEDIDOS_FATURADOS LIMIT 1';
+        let querypg = `SELECT * FROM SITE_PEDIDOS_FATURADOS LIMIT 1`;
         const result = await pgpool.query(querypg);
         console.log("Tentativa de consulta:   ",result.rows);
     // Finalizando conexão com o Banco
@@ -41,5 +41,36 @@ async function checapedidopg() {
     }
 };
 
+async function inserepedidosql(cep) {
+    try {
+    // Inicio da conexão com o banco
+    await sqlpool.connect();
+    console.log("Conexão com o banco de dados SQL sucedida!");
 
-module.exports = {checapedidosql,checapedidopg};
+    // Verificar se o cep já existe no banco 
+    let query = `SELECT CEP FROM dbo.CONSULTA_CEP WHERE cep = '${cep}'`
+    const result = await sqlpool.query(query, [cep]);
+    
+    // const dadosExistentes = result.rowCount > 0;
+    if (result.recordset.length > 0) {
+        console.log("O cep já existe no banco de dados");
+        return;
+      }
+    else {
+    // Modelagem da inserção
+        let insertsql = `INSERT INTO dbo.CONSULTA_CEP(cep, logradouro, complemento, bairro, localidade, uf, ibge, gia, ddd, siafi)`;
+        insertsql += `VALUES('${cep}','Praça teste','Complemento teste','Bairro teste','Localidade','CE','230440','','85','1389')`;
+
+    // Tentativa de execução
+        await sqlpool.query(insertsql, [cep]);
+        console.log("Dados inseridos com suceso")
+    // Encerrar conexão
+        sqlpool.close();
+    };
+    } catch (err) {
+    console.error('Erro com o processo ', err);
+    };
+};
+
+module.exports = {checapedidosql,checapedidopg,inserepedidosql};
+

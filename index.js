@@ -7,7 +7,8 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Utilização do body parser no objeto para conseguirmos interpretar formato json
-app.use(bodyParser.json());
+app.use(express.json());
+// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Importação e utilização das rotas

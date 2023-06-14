@@ -1,4 +1,5 @@
 'use strict';
+
 const sql = require('mssql');
 // Conexão com o SQL
 const connect = {

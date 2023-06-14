@@ -1,10 +1,12 @@
 'use strict';
+
 const express = require('express');
 const router = express.Router();
 const controllers = require('../controllers/controllers.ped.js')
 
 router.get('/', controllers.getsql);
 router.get('/getpg', controllers.getpg);
+router.post('/inseresql', controllers.postsql);
 
 module.exports = router;
 
