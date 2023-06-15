@@ -51,7 +51,6 @@ async function inserepedidosql(cep) {
     let query = `SELECT CEP FROM dbo.CONSULTA_CEP WHERE cep = '${cep}'`
     const result = await sqlpool.query(query, [cep]);
     
-    // const dadosExistentes = result.rowCount > 0;
     if (result.recordset.length > 0) {
         console.log("O cep já existe no banco de dados");
         return;
@@ -72,5 +71,47 @@ async function inserepedidosql(cep) {
     };
 };
 
-module.exports = {checapedidosql,checapedidopg,inserepedidosql};
+async function testefinal(){
+    try{
+    // Inicio da conexão com SQL
+        await sqlpool.connect();
+        console.log("Conexão com o banco de dados SQL sucedida!");
+    
+    //Consulta SQL
+        let ssql = `SELECT CONTA FROM dbo.V_SITE_PEDIDOS_FATURADOS`;
+        const resultsql = await sqlpool.request().query(ssql);
+        console.log(resultsql);
+
+    // Inicio da conexão com POSTGREE
+        await pgpool.connect();
+        console.log("Conexão com banco de dados POSTGREE sucedida!");
+    
+    // Consulta Postgree
+        const query = `SELECT CONTA FROM SITE_PEDIDOS_FATURADOS WHERE IDG2 = 3632`;
+        const resultpg = await pgpool.query(query);
+        console.log(resultpg.rows);
+
+    // Tentativa de Comparação
+        if (resultsql<resultpg.rows){
+            console.log("Postgree é maior")
+            try{
+                
+            } catch{
+
+            };
+        } else {
+            return console.log("Bancos sicronizados")
+        };
+    // Capturando erro
+    } catch (err){
+        console.error('Erro com o processo ', err);
+
+    // Finalizando conexões
+    } finally {
+        await pgpool.release();
+        sqlpool.close();
+    };
+};
+
+module.exports = {checapedidosql,checapedidopg,inserepedidosql,testefinal};
 

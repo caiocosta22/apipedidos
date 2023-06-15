@@ -88,19 +88,20 @@
       "ddd": "71"
     }]
     
-    //* Logica para buscar apenas os ceps
+    // Logica para buscar apenas os ceps
     const pgceps = jsonPostgree.map(e => e.cep)
     const bdlocal = jsonBDlocal.map(e => e.cep)
     
     
     // Variavel que vai guardar apenas os ceps que nao estao inclusos em ambos os jsons
     const jsonArray = []
-    
+    [1, 2, 3, 4] PG
+    [1, 2] SQL
     // Pegar tudo que tem no postgree e nao tem no bdlocal
     pgceps.forEach((element, index) => {
       if(!bdlocal.includes(element)) jsonArray.push(element)
     })
-    
+    [3, 4] jsonArray
     // Variavel que vai guardar as informacoes gerais de cada cep
     const newJsonArray = [];
     
@@ -138,6 +139,19 @@
       }
     }
     
+
+
+    ,
+
+
+
+
+
+
+
+
+
+
     executeQuery();
 */
 
