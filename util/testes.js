@@ -145,6 +145,57 @@
 
 
 
+async function sincronizarDados() {
+    try {
+        // Início da conexão com o SQL Server
+        await sqlpool.connect();
+        console.log("Conexão com o banco de dados SQL Server estabelecida!");
+
+        // Consulta SQL Server
+        const ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
+        const resultsql = await sqlpool.request().query(ssql);
+        const contasSql = resultsql.recordset.map(row => row.CONTA);
+        console.log(resultsql);
+
+        // Início da conexão com o PostgreSQL
+        await pgpool.connect();
+        console.log("Conexão com o banco de dados PostgreSQL estabelecida!");
+
+        // Consulta PostgreSQL
+        const query = `SELECT CONTA, IDG2, ENTIDADEID_LOJA, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2 FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353`;
+        const resultpg = await pgpool.query(query);
+        const registrosPg = resultpg.rows;
+        console.log(registrosPg);
+
+        // Filtrando as contas faltantes
+        const contasFaltantes = [];
+        registrosPg.forEach(registroPg => {
+            if (!contasSql.includes(registroPg.CONTA)) {
+                contasFaltantes.push(registroPg);
+            }
+        });
+        console.log("Contas faltantes: ", contasFaltantes);
+
+        // Inserindo no SQL Server
+        if (contasFaltantes.length > 0) {
+            const valores = contasFaltantes.map(registroPg => {
+                return `('${registroPg.IDG2}','${registroPg.CONTA}', '${registroPg.ENTIDADEID_LOJA}', '${registroPg.ALMOXID}', '${registroPg.NUMDOCUMENTO}', '${registroPg.STATUS}', '${registroPg.TIPO}', '${registroPg.DATAEMISSAO}', '${registroPg.ENTIDADEID_CLIENTE}', '${registroPg.ENTIDADEID_FUNC}', '${registroPg.DESCONTO}', '${registroPg.VALORTOTALPROD}', '${registroPg.VALORTOTALNOTA}', '${registroPg.VALDESCONTO}', '${registroPg.TIPOSERVID}', '${registroPg.PEDCLIENTE}', '${registroPg.CONDICAOID}', '${registroPg.FORMAPAGID}', '${registroPg.DATAFECHAMENTO}', '${registroPg.STATUS_CONF}', '${registroPg.ENTIDADEID_PARCEIRO}', '${registroPg.ENTIDADEID_FUNC2}')`;
+            });
+            const inserirdados = `INSERT INTO dbo.v_siteMovimento_Dia (IDG2, CONTA, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2) VALUES ${valores.join(',')}`;
+
+            await sqlpool.request().query(inserirdados);
+            console.log("Bancos sincronizados");
+        } else {
+            console.log("Os dados já estão atualizados");
+        }
+    } catch (err) {
+        console.error('Erro durante o processo:', err);
+    } finally {
+        // Finalizando conexões
+        await pgpool.end();
+        await sqlpool.close();
+    }
+}
 
 
 
