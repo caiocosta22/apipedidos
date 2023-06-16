@@ -208,6 +208,62 @@ async function sincronizarDados() {
 
 
 
+async function testefinal(){
+  try{
+  // Inicio da conexão com SQL
+      await sqlpool.connect();
+      console.log("Conexão com o banco de dados SQL sucedida!");
+  
+  //Consulta SQL
+      let ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
+      const resultsql = await sqlpool.request().query(ssql);
+      const contasSql = resultsql.recordset.map(row => row.CONTA);
+      console.log(resultsql);
+
+  // Inicio da conexão com POSTGRE
+      await pgpool.connect();
+      console.log("Conexão com banco de dados POSTGRE sucedida!");
+  
+  // Consulta Postgree
+      const query = `SELECT CONTA FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353`;
+      const resultpg = await pgpool.query(query);
+      const registropg = resultpg.rows;
+      console.log(registropg);
+
+  // Filtrando o banco
+      const contasFaltantes = registropg.filter(row => !contasSql.includes(row.CONTA));
+      console.log("Contas faltantes ", contasFaltantes);
+
+  // Pegar todas as variaveis do postegress que salvamos no jsonArray e guardar no newJsonArray, pois antes tinhamos apenas a informacao do cep
+      registropg.forEach(row => {
+          contasSql.forEach(conta => {
+          if(conta === registropg) {
+              contasFaltantes.push(registropg)
+          }});
+      });
+
+  // Inserção no SQL 
+      if (contasFaltantes.length > 0) {
+          
+          const valores = contasFaltantes.map(row => `('${row.IDG2}','${row.CONTA}', '${row.ENTIDADEID_LOJA}', '${row.ALMOXID}', '${row.NUMDOCUMENTO}'${row.STATUS}', '${row.TIPO}', '${row.DATAEMISSAO}', '${row.ENTIDADEID_CLIENTE}', '${row.ENTIDADEID_FUNC}', '${row.DESCONTO}', '${row.VALORTOTALPROD}', '${row.VALORTOTALNOTA}', '${row.VALDESCONTO}', '${row.TIPOSERVID}','${row.PEDCLIENTE}','${row.CONDICAOID}','${row.FORMAPAGID}','${row.DATAFECHAMENTO}','${row.STATUS_CONF}','${row.ENTIDADEID_PARCEIRO}','${row.ENTIDADEID_FUNC2}',)`).join(',');
+          const inserirdados = `INSERT INTO dbo.v_siteMovimento_Dia (IDG2, CONTA, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2) VALUES ${valores}`;
+          
+          await sqlpool.request().query(inserirdados);
+          console.log("Bancos sincronizados");
+      } else {
+          console.log("Dados já estão atualizados");
+      };
+
+  // Capturando erro
+  } catch (err){
+      console.error('Erro com o processo ', err);
+
+  // Finalizando conexões
+  } finally {
+      await pgpool.release();
+      sqlpool.close();
+  };
+};
 
 
 
