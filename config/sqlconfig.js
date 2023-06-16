@@ -8,7 +8,7 @@ const connect = {
   database: 'GPVENDAS_MOTUL',
   server: 'g2server',
   pool: {
-    max: 20,
+    max: 10000,
     min: 0,
     idleTimeoutMillis: 30000
   },
