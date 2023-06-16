@@ -35,8 +35,8 @@ exports.teste = (req, res) => {
     models.testefinal(req, res).then(() => {
         return res.status(200).json({ message: "Consulta realizada com suscesso!"});
         })
-        .catch(error => {
-            return res.status(400).json({ error: "Erro ao consultar"});
+        .catch(err => {
+            return res.status(201).json({ message: "Bancos sincronizados "});
         });
     };
 

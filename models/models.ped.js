@@ -82,38 +82,45 @@ async function testefinal(){
     //Consulta SQL
         let ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
         const resultsql = await sqlpool.request().query(ssql);
-        const contasSql = resultsql.recordset.map(row => row.conta);
-        console.log(resultsql);
+        const contasSql = resultsql.recordset;
+        console.log("Passamos da consulta SQL");
   
     // Inicio da conexão com POSTGRE
         await pgpool.connect();
         console.log("Conexão com banco de dados POSTGRE sucedida!");
     
     // Consulta Postgree
-        const query = `SELECT CONTA FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
+        const query = `SELECT conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, to_char(DATAEMISSAO, 'MM/DD/YYYY') AS DATAEMISSAO , ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, to_char(DATAFECHAMENTO, 'MM/DD/YYYY') AS DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2 FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
         const resultpg = await pgpool.query(query);
-        const contasPg = resultpg.rows.map(row => row.conta);
-        console.log(contasPg);
-  
+        const contaspg = resultpg.rows;
+        console.log("Passamos da consulta PG");
 
     // Filtro
-        /*const jsonArray = [];
-
-        contasPg.forEach((row, index) => {
-            if(!contasSql.includes(row)) jsonArray.push(row);
-        });*/
-
-        const contasFaltantes = contasPg.filter(contaPg => !contasSql.includes(contaPg));
- 
+        const contasFaltantes = contaspg.filter(contapg => !contasSql.some(contasql => contasql.conta === contapg.conta));
+        console.log("Contas inseridas: ",contasFaltantes.map(row => row.conta));
+     
     // Inserção no SQL 
         if (contasFaltantes.length > 0) {
             
-            const valores = contasFaltantes.map(row => `('${row}','${entidadeid_loja}','${almoxid}','${numdocumento}','${status}','${tipo}','${dataemissao}','${entidadeid_cliente}','${entidadeid_func}','${desconto}','${valortotalprod}','${valortotalnota}','${valdesconto}','${tiposervid}','${pedcliente}','${condicaoid}','${formapagid}','${datafechamento}','${status_conf}','${entidadeid_parceiro}','${entidadeid_func2}')`).join(',');
+            const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}',${row.dataemissao},'${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}')`).join(',');
+            const inserirdados = `INSERT INTO MOVIMENTO_DIA_TESTE (conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2) VALUES ${valores}`;
 
-            const inserirdados = `INSERT INTO Movimento_Dia (conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2) VALUES ${valores}`;
-            
             await sqlpool.request().query(inserirdados);
-            console.log("Bancos sincronizados");
+            console.log("Pedidos sincronizados");
+
+    // Consulta de itens no PG 
+            const queryitens = `SELECT entidadeid_loja, almoxid, conta, item, operador, DATA , preco, quantidade, desconto, precocompra, preco_tabela, faixaid, ambienteid, idg2, produtoid FROM SITE_ITENS_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
+            const resultadoitens = await pgpool.query(queryitens);
+            const pgitens = resultadoitens.rows;
+
+    // Inserção de itens no SQL    
+            console.log("Itens inseridos: ",pgitens.map(row => row.item));
+            
+            const valoresitens = pgitens.map(row => `('${row.entidadeid_loja}', '${row.almoxid}', '${row.conta}', '${row.item}', '${row.operador}', '${row.data}', '${row.preco}', '${row.quantidade}', '${row.desconto}', '${row.precocompra}', '${row.preco_tabela}', '${row.faixaid}', '${row.ambienteid}', '${row.produtoid}')`);
+            const inseriritens = `INSERT INTO ITENS_DIA_TESTE (entidadeid_loja, almoxid, conta, item, operador, data, preco, quantidade, desconto, precocompra, preco_tabela, faixaid, ambienteid, produtoid) VALUES (${valoresitens})`;
+            await sqlpool.request().query(inseriritens); //Morre aqui
+            console.log("Itens sincronizados");
+
         } else {
             console.log("Dados já estão atualizados");
         };
