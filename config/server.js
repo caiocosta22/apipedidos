@@ -66,8 +66,8 @@ function onListening() {
 function Timer() {
     (async () => {
         try {
-            const response = await axios.post('http://localhost:3000/ped/sincronizar')
-            console.log(response);
+            await axios.post('http://localhost:3000/ped/sincronizar')
+            console.log("Timer executado");
         } catch (error) {
             console.log("Erro no timer");
         }
