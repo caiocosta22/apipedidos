@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Importação e utilização das rotas utilizadas
 const routePed = require('./routes/routes.ped.js');
-
 app.use('/ped', routePed);
 
 module.exports = app;
