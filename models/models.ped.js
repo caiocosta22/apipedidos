@@ -13,7 +13,6 @@ async function pedsinc(){
         let ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
         const resultsql = await sqlpool.request().query(ssql);
         const contasSql = resultsql.recordset;
-        console.log("Passamos da consulta SQL");
   
     // Inicio da conexão com POSTGRE
         await pgpool.connect();
@@ -23,7 +22,6 @@ async function pedsinc(){
         const query = `SELECT conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, to_char(DATAEMISSAO, 'MM/DD/YYYY') AS DATAEMISSAO , ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, to_char(DATAFECHAMENTO, 'MM/DD/YYYY') AS DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2 FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
         const resultpg = await pgpool.query(query);
         const contaspg = resultpg.rows;
-        console.log("Passamos da consulta PG");
 
     // Filtro de pedidos
         const contasFaltantes = contaspg.filter(contapg => !contasSql.some(contasql => contasql.conta === contapg.conta));
@@ -37,14 +35,13 @@ async function pedsinc(){
 
             await sqlpool.request().query(inserirdados);
             console.log("Pedidos sincronizados");
-    
-    // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
 
+    // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
+    
     // Consulta de itens no SQL
             let ssqlitens = `SELECT * FROM dbo.ITENS_DIA_TESTE`;
             const resultitens = await sqlpool.request().query(ssqlitens);
             const itensSql = resultitens.recordset;
-            console.log("Passamos da consulta SQL");
 
     // Consulta de itens no PG 
             const queryitens = `SELECT entidadeid_loja, almoxid, conta, item, operador,to_char(DATA, 'MM/DD/YYYY') AS DATA, preco, quantidade, desconto, precocompra, preco_tabela, faixaid, ambienteid, idg2, produtoid FROM SITE_ITENS_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
@@ -53,7 +50,6 @@ async function pedsinc(){
 
     // Filtro de itens
             const itensFaltantes = pgitens.filter(itempg => !itensSql.some(itemsql => itemsql.conta === itempg.conta));
-            console.log("Contas inseridas: ",itensFaltantes.map(row => row.item));
       
     // Inserção de itens no SQL    
             if (itensFaltantes.length > 0){
