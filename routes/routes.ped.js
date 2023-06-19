@@ -4,10 +4,7 @@ const express = require('express');
 const router = express.Router();
 const controllers = require('../controllers/controllers.ped.js')
 
-router.get('/', controllers.getsql);
-router.get('/getpg', controllers.getpg);
-router.post('/inseresql', controllers.postsql);
-router.post('/teste', controllers.teste);
+router.post('/sincronizar', controllers.sincronizar);
 
 module.exports = router;
 

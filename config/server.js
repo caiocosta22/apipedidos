@@ -1,9 +1,4 @@
 'use strict'
-// banco local: dbo.v_siteMovimento_Dia e dbo.v_siteitens_dia 
-// banco nuvem: site_movimento_dia e site_itens_dia
-// usar idg2 =  3353
-// CONTA DO POSTGREE QUE PRECISAM SER INSERIDAS 2207,2206,2205
-// CONTAS NO SQL SERVER = 10, 20, 30
 
 const http = require('http');
 const debug = require('debug')('gpvendas:server');
