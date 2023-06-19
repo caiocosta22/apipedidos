@@ -9,7 +9,7 @@ async function pedsinc(){
         await sqlpool.connect();
         console.log("Conexão com o banco de dados SQL sucedida!");
     
-    //Consulta SQL
+    //Consulta de pedidos no SQL
         let ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
         const resultsql = await sqlpool.request().query(ssql);
         const contasSql = resultsql.recordset;
@@ -19,17 +19,17 @@ async function pedsinc(){
         await pgpool.connect();
         console.log("Conexão com banco de dados POSTGRE sucedida!");
     
-    // Consulta Postgree
+    // Consulta de pedidos no Postgree
         const query = `SELECT conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, to_char(DATAEMISSAO, 'MM/DD/YYYY') AS DATAEMISSAO , ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, to_char(DATAFECHAMENTO, 'MM/DD/YYYY') AS DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2 FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353 AND CONTA IN(2207,2206,2205)`;
         const resultpg = await pgpool.query(query);
         const contaspg = resultpg.rows;
         console.log("Passamos da consulta PG");
 
-    // Filtro
+    // Filtro de pedidos
         const contasFaltantes = contaspg.filter(contapg => !contasSql.some(contasql => contasql.conta === contapg.conta));
         console.log("Contas inseridas: ",contasFaltantes.map(row => row.conta));
      
-    // Inserção no SQL 
+    // Inserção de pedidos no SQL 
         if (contasFaltantes.length > 0) {
             
             const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}',${row.dataemissao},'${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}')`).join(',');
@@ -39,7 +39,7 @@ async function pedsinc(){
             console.log("Pedidos sincronizados");
     
 
-    // Sincronização Itens
+    // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
 
 
     // Consulta de itens no SQL
@@ -53,7 +53,7 @@ async function pedsinc(){
             const resultadoitens = await pgpool.query(queryitens);
             const pgitens = resultadoitens.rows;
 
-    // Filtro
+    // Filtro de itens
             const itensFaltantes = pgitens.filter(itempg => !itensSql.some(itemsql => itemsql.conta === itempg.conta));
             console.log("Contas inseridas: ",itensFaltantes.map(row => row.item));
       
@@ -74,9 +74,9 @@ async function pedsinc(){
             console.log("Dados já estão atualizados");
         };
   
-    // Capturando erro
+    // Capturando
     } catch (err){
-        console.error('Erro com o processo ', err);
+        console.error('Erro com a sincronização ', err);
   
     // Finalizando conexões
     } finally {
