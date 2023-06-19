@@ -38,9 +38,7 @@ async function pedsinc(){
             await sqlpool.request().query(inserirdados);
             console.log("Pedidos sincronizados");
     
-
     // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
-
 
     // Consulta de itens no SQL
             let ssqlitens = `SELECT * FROM dbo.ITENS_DIA_TESTE`;
@@ -66,7 +64,7 @@ async function pedsinc(){
             
                 await sqlpool.request().query(inseriritens);
                 console.log("Itens sincronizados");
-            }else {
+            } else {
                 console.log("Não há itens para ser inseridos");
             };
 

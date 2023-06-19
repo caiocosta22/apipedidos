@@ -3,7 +3,7 @@
 const http = require('http');
 const debug = require('debug')('gpvendas:server');
 const app = require('../index.js')
-
+const axios = require('axios');
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -13,7 +13,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening)
 console.log("Api rodando na porta " + port);
- 
+
 //Funcao para normalizar a porta
 function normalizePort(val) {
     const port = parseInt(val, 10);
@@ -61,3 +61,21 @@ function onListening() {
         : 'port' + addr.port;
         debug('Listening on' + bind);
 };
+
+//Funcao timer
+function Timer() {
+    (async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/ped/sincronizar')
+            console.log(response);
+        } catch (error) {
+            console.log("Erro no timer");
+        }
+      })();
+  };
+const intervalo = 20 * 1000; // Tempo setado para 20 em 20 segundos
+setInterval(Timer, intervalo);
+  
+
+
+
