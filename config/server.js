@@ -73,7 +73,7 @@ function Timer() {
         }
       })();
   };
-const intervalo = 20 * 1000; // Tempo setado para 20 em 20 segundos
+const intervalo = 10 * 1000; // Tempo setado para 20 em 20 segundos
 setInterval(Timer, intervalo);
   
 
