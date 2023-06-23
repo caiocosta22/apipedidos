@@ -95,6 +95,7 @@ async function pedsinc(){
     // Finalizando conexões
     } finally {
         await pgpool.release();
+        await pgpool.end();
         sqlpool.close();
     };
   };
