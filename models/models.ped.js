@@ -11,7 +11,7 @@ async function pedsinc(){
         console.log("Conexão com o banco de dados SQL sucedida!");
     
     //Consulta de pedidos no SQL
-        let ssql = `SELECT * FROM dbo.v_siteMovimento_Dia`;
+        let ssql = `SELECT * FROM dbo.v_SiteMovimento_Dia2`;
         const resultsql = await sqlpool.request().query(ssql);
         const contasSql = resultsql.recordset;
   
@@ -45,7 +45,7 @@ async function pedsinc(){
     // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
     
     // Consulta de itens no SQL
-            let ssqlitens = `SELECT * FROM dbo.v_siteitens_dia`;
+            let ssqlitens = `SELECT * FROM dbo.v_Siteitens_dia2`;
             const resultitens = await sqlpool.request().query(ssqlitens);
             const itensSql = resultitens.recordset;
     // Consulta de itens no PG 
@@ -88,7 +88,7 @@ async function pedsinc(){
     } catch (err){
         console.error('Erro com a sincronização ', err);
     // Inserção na tabela de Log
-        const logsql = `INSERT INTO INTEGRACAO_API(DATASINCRONIZACAO_INICIO, tipo, descricao, status) values(getdate(), 1, 'integracao fv', '3')`
+        const logsql = `INSERT INTO INTEGRACAO_API(DATASINCRONIZACAO_INICIO,DATASINCRONIZACAO_FIM, tipo, descricao, status) values(getdate(),getdate(), 1, 'integracao fv', '3')`
         await sqlpool.request().query(logsql)
         console.log("Log iniciado!")
 

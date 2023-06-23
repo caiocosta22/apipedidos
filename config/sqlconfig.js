@@ -5,8 +5,8 @@ const sql = require('mssql');
 const connect = {
   user: 'gpvendas',
   password: 'gpinfo',
-  database: 'GPVENDAS_MOTUL',
-  server: 'g2server',
+  database: 'GPVENDAS',
+  server: 'servidor',
   pool: {
     max: 10000,
     min: 0,
@@ -19,15 +19,20 @@ const connect = {
 const sqlpool = new sql.ConnectionPool(connect);
 
 // Teste de conexão com o banco de dados
-/*async function Connectionsql() {
+/*
+async function Connectionsql() {
   try {
-    await sql.connect(sqlconfig);
+    await sqlpool.connect;
     console.log("Conexão com banco de dados SQL sucedida!");
+    const query = `SELECT * FROM dbo.v_siteitens_dia`
+    console.log("passei da query")
+    const result = await sqlpool.request().query(query);
+    console.log("passei daqui")
+    console.log(result.recordset);
   } catch (err) {
     console.log("Falha na conexão com o banco de dados SQL");
-    throw err;
-  }
-  sql.close();
+  } finally{
+  await sqlpool.close();}
 };
 Connectionsql();
 */
