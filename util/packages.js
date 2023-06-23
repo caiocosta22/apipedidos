@@ -6,3 +6,4 @@
 //HTTP para estabelecer a conexão HTTP com as rotas da API
 //MSSQL para o SQL SERVER e PG para o POSTGREE
 //USE STRICT força meu javascript a interpretar meu código da maneira mais limpa possivel
+
