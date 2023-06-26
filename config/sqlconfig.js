@@ -3,10 +3,10 @@
 const sql = require('mssql');
 // Conexão com o SQL
 const connect = {
-  user: 'gpvendas',
-  password: 'gpinfo',
-  database: 'GPVENDAS_as_alimentos',
-  server: 'G2server',
+  user: 'user',
+  password: 'password',
+  database: 'database',
+  server: 'server',
   pool: {
     max: 100000,
     min: 0,

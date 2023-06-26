@@ -3,11 +3,11 @@
 // Conexão com o PG
 const { Pool } = require('pg'); 
 const pgpool = new Pool({
-  user: 'gprod',
-  host: 'CLOUD64.P80.COM.BR',
-  database: 'gpinformatica2',
-  password: 'g2@9876@g2',
-  port: '5432',
+  user: 'user',
+  host: 'host pg',
+  database: 'database',
+  password: 'password',
+  port: '5432 default',
   max: 100000,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
