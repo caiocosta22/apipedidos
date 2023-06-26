@@ -36,8 +36,8 @@ async function pedsinc(){
     // Inserção de pedidos no SQL 
         if (contasFaltantes.length > 0) {
             
-            const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}',${row.dataemissao},'${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}','${row.idg2}')`).join(',');
-            const inserirdados = `INSERT INTO SITE_MOVIMENTO_DIA (conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2,IDG2) VALUES ${valores}`;
+            const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}','${row.dataemissao}','${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}','${row.idg2}')`).join(',');
+            const inserirdados = `INSERT INTO SITE_MOVIMENTO_DIA (conta, entidadeid_loja, almoxid, numdocumento, status, tipo, dataemissao, entidadeid_cliente, entidadeid_func, desconto, valortotalprod, valortotalnota, valdesconto, tiposervid, pedcliente, condicaoid, formapagid, datafechamento, status_conf, entidadeid_parceiro, entidadeid_func2,idg2) VALUES ${valores}`;
 
             await pgpool.query(inserirdados);
             console.log("Pedidos sincronizados");
@@ -60,9 +60,8 @@ async function pedsinc(){
     // Inserção de itens no SQL    
             if (itensFaltantes.length > 0){
                 const valoresitens = itensFaltantes.map(row => `('${row.entidadeid_loja}','${row.almoxid}','${row.conta}','${row.item}','${row.operador}','${row.data}','${row.preco}','${row.quantidade}','${row.desconto}','${row.precocompra}','${row.preco_tabela}','${row.faixaid}','${row.ambienteid}','${row.idg2}','${row.produtoid}')`).join(',');
-                console.log(valoresitens);
-                const inseriritens = `INSERT INTO SITE_ITENS_DIA (entidadeid_loja, almoxid, conta, item, operador,data, preco, quantidade, desconto, precocompra, preco_tabela, produtoid) VALUES ${valoresitens}`;
-                await sqlpool.request().query(inseriritens);
+                const inseriritens = `INSERT INTO SITE_ITENS_DIA (entidadeid_loja,almoxid,conta,item,operador,data,preco,quantidade,desconto,precocompra,preco_tabela,faixaid,ambienteid,idg2,produtoid) VALUES ${valoresitens}`;
+                await pgpool.query(inseriritens);
                 console.log("Itens sincronizados");
 
             } else {
