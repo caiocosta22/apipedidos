@@ -11,7 +11,7 @@ async function pedsinc(){
         console.log("Conexão com o banco de dados SQL sucedida!");
     
     //Consulta de pedidos no SQL
-        let ssql = `SELECT * FROM dbo.v_SiteMovimento_Dia2`;
+        let ssql = `SELECT * FROM -- INSIRA A TABELA`;
         const resultsql = await sqlpool.request().query(ssql);
         const contasSql = resultsql.recordset;
   
@@ -20,12 +20,12 @@ async function pedsinc(){
         console.log("Conexão com banco de dados POSTGRE sucedida!");
     
     // Consulta de pedidos no Postgree
-        const query = `SELECT * FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3631`;
+        const query = `SELECT * FROM -- INSIRA A TABELA`;
         const resultpg = await pgpool.query(query);
         const contaspg = resultpg.rows;
     
     // Inserção na tabela de Log
-        const logsql = `INSERT INTO INTEGRACAO_API(DATASINCRONIZACAO_INICIO, tipo, descricao, status) values(getdate(), 1, 'integracao fv', '1')`
+        const logsql = `INSERT INTO TABELA_INTEGRACAO(DATASINCRONIZACAO_INICIO, tipo, descricao, status) values(getdate(), 1, 'integracao fv', '1')`
         await sqlpool.request().query(logsql)
         console.log("Log iniciado!")
 
@@ -45,11 +45,11 @@ async function pedsinc(){
     // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
     
     // Consulta de itens no SQL
-            let ssqlitens = `SELECT * FROM dbo.v_Siteitens_dia2`;
+            let ssqlitens = `SELECT * FROM -- PREENCHA A TABELA`;
             const resultitens = await sqlpool.request().query(ssqlitens);
             const itensSql = resultitens.recordset;
     // Consulta de itens no PG 
-            const queryitens = `SELECT * FROM SITE_ITENS_DIA WHERE IDG2 = 3631`;
+            const queryitens = `SELECT * FROM -- PREENCHA A TABELA`;
             const resultadoitens = await pgpool.query(queryitens);
             const pgitens = resultadoitens.rows;
  
@@ -59,8 +59,8 @@ async function pedsinc(){
     
     // Inserção de itens no SQL    
             if (itensFaltantes.length > 0){
-                const valoresitens = itensFaltantes.map(row => `('${row.entidadeid_loja}','${row.almoxid}','${row.conta}','${row.item}','${row.operador}','${row.data}','${row.preco}','${row.quantidade}','${row.desconto}','${row.precocompra}','${row.preco_tabela}','${row.faixaid}','${row.ambienteid}','${row.idg2}','${row.produtoid}')`).join(',');
-                const inseriritens = `INSERT INTO SITE_ITENS_DIA (entidadeid_loja,almoxid,conta,item,operador,data,preco,quantidade,desconto,precocompra,preco_tabela,faixaid,ambienteid,idg2,produtoid) VALUES ${valoresitens}`;
+                const valoresitens = itensFaltantes.map(row => `('${row.dados1}','${row.dados2}')`).join(',');
+                const inseriritens = `INSERT INTO - PREENCHA A TABELA ) VALUES ${valoresitens}`;
                 await pgpool.query(inseriritens);
                 console.log("Itens sincronizados");
 
@@ -69,7 +69,7 @@ async function pedsinc(){
             };
     
     // Finalizando o registro no Log
-        const ultimologsql = `update INTEGRACAO_API set DATASINCRONIZACAO_FIM = getdate(), status = '2' where status = '1' and DATASINCRONIZACAO_FIM is null`;
+        const ultimologsql = `update TABELA_SINCRONIZACAO set DATASINCRONIZACAO_FIM = getdate(), status = '2' where status = '1' and DATASINCRONIZACAO_FIM is null`;
         await sqlpool.request().query(ultimologsql);
         console.log("Log Finalizado"); 
 
@@ -77,7 +77,7 @@ async function pedsinc(){
             console.log("Dados já estão atualizados");
     
     // Finalizando o registro no Log
-            const ultimologsql = `update INTEGRACAO_API set DATASINCRONIZACAO_FIM = getdate(), status = '2' where status = '1' and DATASINCRONIZACAO_FIM is null`;
+            const ultimologsql = `update TABELA_SINCRONIZACAO set DATASINCRONIZACAO_FIM = getdate(), status = '2' where status = '1' and DATASINCRONIZACAO_FIM is null`;
             await sqlpool.request().query(ultimologsql);
             console.log("Log Finalizado"); 
         };
@@ -86,7 +86,7 @@ async function pedsinc(){
     } catch (err){
         console.error('Erro com a sincronização ', err);
     // Inserção na tabela de Log
-        const logsql = `INSERT INTO INTEGRACAO_API(DATASINCRONIZACAO_INICIO,DATASINCRONIZACAO_FIM, tipo, descricao, status) values(getdate(),getdate(), 1, 'integracao fv', '3')`
+        const logsql = `INSERT INTO TABELA_SINCRONIZACAO(DATASINCRONIZACAO_INICIO,DATASINCRONIZACAO_FIM, tipo, descricao, status) values(getdate(),getdate(), 1, 'integracao fv', '3')`
         await sqlpool.request().query(logsql)
         console.log("Log iniciado!")
 

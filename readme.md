@@ -1,6 +1,3 @@
 # Projeto api- pedidos
-Api construída em NODEJS com o intuito de ser um sincronizador de pedidos, sincronizando o banco de dados local (SQL SERVER) com o banco de dados da nuvem (POSTGREESQL).
-# Dia 19/06/2023 - Projeto funcionando
-Ao enviar uma requisição para o caminho http://localhost:3000/ped/sincronizar, a API já está totalmente funcional, sincronizando pedidos e itens com o banco de dados. Se os pedidos já estiverem sido sincronizados, ele emitirá uma mensagem, a mesma coisa com os itens, assim não enviando nada duplicado para o banco de dados.
-# Dia 22/06/2023 - Projeto aperfeicoado
-Agora o projeto não precisa mais de requisições por parte do cliente, ele mesmo executa as requisições para fazer a sincronização de pedidos e itens. Adicionei também um timer no objeto server, para que essa requisição seja feita repetidamente, em tempo configuravel. Adicionado também o qckwinsrvc, para que agora a aplicação seja um serviço do Windows, assim não sendo necessário executa-la, se tornando uma Api independente do cliente e mais simples em relação ao suporte.
+API construída em NODEJS construída para sincronizar dados de um banco de dados da nuvem (POSTGRES) com um banco de dados local (SQL SERVER) executando auto-requisições.
+Instalei no servidor do cliente utilizando o NPM QCKWINSVC que me permite rodar esse API através de serviços do windows, assim não precisando hospeda-la na WEB. (Também aplicável para amazon EC2).
