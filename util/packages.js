@@ -9,19 +9,18 @@
 
 // Scripts do SQL 
 /*
-
 ALTER                                                  VIEW [dbo].[v_SiteItens_Dia2] as
 			select b.entidadeid_loja,
 			b.almoxid,
 			b.conta,
 			b.item,
 			b.operador,
-			CONVERT(varchar, b.data, 120) AS data,
-			b.preco,
-			b.quantidade,
-			b.desconto,
-			ISNULL(b.precocompra,0) as precocompra,
-			ISNULL(b.preco_tabela,0) as preco_tabela,
+			CONVERT(varchar, isnull(b.data,00000000), 120) AS data,
+			CAST(ISNULL(b.preco,0) AS decimal(16,2)) as preco,
+			CAST(ISNULL(b.quantidade,0) AS decimal(16,2)) as quantidade,
+			A.desconto,
+			CAST(ISNULL(B.precocompra,0) AS decimal(16,2)) as precocompra,
+			CAST(ISNULL(B.preco_tabela,0) AS decimal(16,2)) as preco_tabela,
 			ISNULL(b.faixaid,0) as faixaid,
 			ISNULL(b.ambienteid,0) as ambienteid,
 			(SELECT VALOR FROM CONFIGURACAO WHERE PARAMETRO = 31601) as idg2,
@@ -35,13 +34,13 @@ ALTER                                                  VIEW [dbo].[v_SiteItens_D
 --------------------------------------------------------------------------------------------------------------
 
 alter                                                  VIEW [dbo].[v_SiteMovimento_Dia2] AS
-		SELECT TOP 1 conta, --PK
+		SELECT TOP 100  conta, --PK
 		entidadeid_loja, --PK
 		almoxid,
 		numdocumento,
 		status,
 		tipo,
-		CONVERT(varchar, dataemissao, 120)AS dataemissao,
+		CONVERT(varchar, ISNULL(dataemissao,00000000), 120)AS dataemissao,
 		ISNULL(entidadeid_cliente,0) AS entidadeid_cliente,
 		entidadeid_func,
 		CAST(ISNULL(desconto,0) AS decimal(16,2)) as desconto,
@@ -52,7 +51,7 @@ alter                                                  VIEW [dbo].[v_SiteMovimen
 		ISNULL(pedcliente,0) as pedcliente,
 		ISNULL(condicaoid,0) as condicaoid,
 		ISNULL(formapagid,0) as formapagid,
-		CONVERT(varchar, datafechamento, 120) AS datafechamento,
+		CONVERT(varchar, ISNULL(datafechamento,00000000), 120) AS datafechamento,
 		ISNULL(status_conf,0) AS status_conf,
 		ISNULL(entidadeid_parceiro,0) as entidadeid_parceiro,
 		ISNULL(entidadeid_func2,0) as entidadeid_func2,
