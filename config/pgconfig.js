@@ -8,7 +8,7 @@ const pgpool = new Pool({
   database: 'gpinformatica2',
   password: 'g2@9876@g2',
   port: '5432',
-  max: 20,
+  max: 100000,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });

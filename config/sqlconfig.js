@@ -5,10 +5,10 @@ const sql = require('mssql');
 const connect = {
   user: 'gpvendas',
   password: 'gpinfo',
-  database: 'GPVENDAS',
-  server: 'servidor',
+  database: 'GPVENDAS_as_alimentos',
+  server: 'G2server',
   pool: {
-    max: 10000,
+    max: 100000,
     min: 0,
     idleTimeoutMillis: 30000
   },

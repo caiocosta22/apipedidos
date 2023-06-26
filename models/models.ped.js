@@ -20,7 +20,7 @@ async function pedsinc(){
         console.log("Conexão com banco de dados POSTGRE sucedida!");
     
     // Consulta de pedidos no Postgree
-        const query = `SELECT conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, to_char(DATAEMISSAO, 'MM/DD/YYYY') AS DATAEMISSAO , ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, to_char(DATAFECHAMENTO, 'MM/DD/YYYY') AS DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2 FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3353 AND CONTA = '1234567'`;
+        const query = `SELECT * FROM SITE_MOVIMENTO_DIA WHERE IDG2 = 3631`;
         const resultpg = await pgpool.query(query);
         const contaspg = resultpg.rows;
     
@@ -30,16 +30,17 @@ async function pedsinc(){
         console.log("Log iniciado!")
 
     // Filtro de pedidos
-        const contasFaltantes = contaspg.filter(contapg => !contasSql.some(contasql => contasql.conta === contapg.conta));
-        console.log("Contas Faltantes: ",contasFaltantes.map(row => row.conta));
+        const contasFaltantes = contasSql.filter(contasql=> !contaspg.some(contapg => contapg.conta === contasql.conta));
+        // console.log("Contas Faltantes: ",contasFaltantes.map(row => row.conta));
+        console.log("Contas Faltantes: ",contasFaltantes);
      
     // Inserção de pedidos no SQL 
         if (contasFaltantes.length > 0) {
             
-            const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}',${row.dataemissao},'${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}')`).join(',');
-            const inserirdados = `INSERT INTO MOVIMENTO_DIA (conta, entidadeid_loja, ALMOXID, NUMDOCUMENTO, STATUS, TIPO, DATAEMISSAO, ENTIDADEID_CLIENTE, ENTIDADEID_FUNC, DESCONTO, VALORTOTALPROD, VALORTOTALNOTA, VALDESCONTO, TIPOSERVID, PEDCLIENTE, CONDICAOID, FORMAPAGID, DATAFECHAMENTO, STATUS_CONF, ENTIDADEID_PARCEIRO, ENTIDADEID_FUNC2) VALUES ${valores}`;
+            const valores = contasFaltantes.map(row => `('${row.conta}','${row.entidadeid_loja}','${row.almoxid}','${row.numdocumento}','${row.status}','${row.tipo}','${row.dataemissao}','${row.entidadeid_cliente}','${row.entidadeid_func}','${row.desconto}','${row.valortotalprod}','${row.valortotalnota}','${row.valdesconto}','${row.tiposervid}','${row.pedcliente}','${row.condicaoid}','${row.formapagid}','${row.datafechamento}','${row.status_conf}','${row.entidadeid_parceiro}','${row.entidadeid_func2}','${row.idg2}')`).join(',');
+            const inserirdados = `INSERT INTO SITE_MOVIMENTO_DIA (CONTA,ENTIDADEID_LOJA,ALMOXID,NUMDOCUMENTO,STATUS,TIPO,DATAEMISSAO,ENTIDADEID_CLIENTE,ENTIDADEID_FUNC,DESCONTO,VALORTOTALPROD,VALORTOTALNOTA,VALDESCONTO,TIPOSERVID,PEDCLIENTE,CONDICAOID,FORMAPAGID,DATAFECHAMENTO,STATUS_CONF,ENTIDADEID_PARCEIRO,ENTIDADEID_FUNC2,IDG2) VALUES ${valores}`;
 
-            await sqlpool.request().query(inserirdados);
+            await pgpool.query(inserirdados);
             console.log("Pedidos sincronizados");
 
     // -------------------------------------------------Sincronização Itens---------------------------------------------------------------------------
@@ -49,21 +50,20 @@ async function pedsinc(){
             const resultitens = await sqlpool.request().query(ssqlitens);
             const itensSql = resultitens.recordset;
     // Consulta de itens no PG 
-            const queryitens = `SELECT entidadeid_loja, almoxid, conta, item, operador,(TO_CHAR (DATA, 'YYYY-MM-DD HH:MI:SS')) AS data, CAST(preco as FLOAT) as preco, CAST(quantidade as FLOAT) as quantidade, CAST(desconto as FLOAT) as desconto, CAST(precocompra AS decimal(16,2)) AS precocompra, 1 AS preco_tabela, produtoid FROM SITE_ITENS_DIA WHERE IDG2 = 3353 AND CONTA = '1234567'`;
+            const queryitens = `SELECT * FROM SITE_ITENS_DIA WHERE IDG2 = 3631`;
             const resultadoitens = await pgpool.query(queryitens);
             const pgitens = resultadoitens.rows;
  
     // Filtro de itens
-            const itensFaltantes = pgitens.filter(itempg => !itensSql.some(itemsql => itemsql.conta === itempg.conta));
+            const itensFaltantes = itensSql.filter(itemsql => !pgitens.some(itempg => itempg.conta === itemsql.conta));
             console.log("Itens inseridos: ",itensFaltantes.map(row => row.item));
     
     // Inserção de itens no SQL    
             if (itensFaltantes.length > 0){
-                                
-                const valoresitens = itensFaltantes.map(row => `('${row.entidadeid_loja}','${row.almoxid}','${row.conta}','${row.item}','${row.operador}','${row.data}','${row.preco}','${row.quantidade}','${row.desconto}','${row.precocompra}','${row.preco_tabela}','${row.produtoid}')`).join(',');
+                const valoresitens = itensFaltantes.map(row => `('${row.entidadeid_loja}','${row.almoxid}','${row.conta}','${row.item}','${row.operador}','${row.data}','${row.preco}','${row.quantidade}','${row.desconto}','${row.precocompra}','${row.preco_tabela}','${row.faixaid}','${row.ambienteid}','${row.idg2}','${row.produtoid}')`).join(',');
                 console.log(valoresitens);
-                const inseriritens = `INSERT INTO ITENS_DIA (entidadeid_loja, almoxid, conta, item, operador,data, preco, quantidade, desconto, precocompra, preco_tabela, produtoid) VALUES ${valoresitens}`;
-                await sqlpool.request().query(inseriritens);
+                const inseriritens = `INSERT INTO SITE_ITENS_DIA (entidadeid_loja,almoxid,conta,item,operador,data,preco,quantidade,desconto,precocompra,preco_tabela,faixaid,ambienteid,idg2,produtoid) VALUES ${valoresitens}`;
+                await pgpool.query(inseriritens);
                 console.log("Itens sincronizados");
 
             } else {
